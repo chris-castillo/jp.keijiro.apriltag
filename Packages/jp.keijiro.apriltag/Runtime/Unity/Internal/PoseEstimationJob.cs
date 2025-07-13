@@ -27,26 +27,27 @@ struct PoseEstimationJob : Unity.Jobs.IJobParallelFor
 
     // Camera parameters
     double _tagSize;
-    double _focalLength;
+    double _fx, _fy;
     double2 _focalCenter;
 
     // Constructor
     public PoseEstimationJob
       (NativeArray<Input> input, NativeArray<TagPose> output,
-       int width, int height, float fov, float tagSize)
+       float fx, float fy, float cx, float cy, float tagSize)
     {
         _input = input;
         _output = output;
         _tagSize = tagSize;
-        _focalLength = height / 2 / math.tan(fov / 2);
-        _focalCenter = math.double2(width, height) / 2;
+        _fx = fx;
+        _fy = fy;
+        _focalCenter = math.double2(cx, cy);
     }
 
     // Job execution method
     public void Execute(int i)
     {
         var info = new Interop.DetectionInfo(ref _input[i].Ref, _tagSize,
-           _focalLength, _focalLength, _focalCenter.x, _focalCenter.y);
+           _fx, _fy, _focalCenter.x, _focalCenter.y);
 
         using var pose = new Interop.Pose(ref info);
 
