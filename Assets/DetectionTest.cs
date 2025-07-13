@@ -38,7 +38,11 @@ sealed class DetectionTest : MonoBehaviour
 
         // AprilTag detection
         var fov = Camera.main.fieldOfView * Mathf.Deg2Rad;
-        _detector.ProcessImage(image, fov, _tagSize);
+        var fx = _source.OutputResolution.y * 0.5f / Mathf.Tan(fov * 0.5f);
+        var fy = fx;
+        var cx = _source.OutputResolution.x * 0.5f;
+        var cy = _source.OutputResolution.y * 0.5f;
+        _detector.ProcessImage(image, fx, fy, cx, cy, _tagSize);
 
         // Detected tag visualization
         foreach (var tag in _detector.DetectedTags)

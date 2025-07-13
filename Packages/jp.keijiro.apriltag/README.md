@@ -47,16 +47,17 @@ smartphone screen to display the tags.
 [the apriltag-imgs repository]:
   https://github.com/AprilRobotics/apriltag-imgs/tree/master/tagStandard41h12
 
-The `DetectionTest` component uses the Field of View value of the main camera to
-estimate tag positions. You can try the sample without adjusting it, but it may
-give incorrect depth information. To get accurate tag positions, you should
-match the FoV value with the actual camera FoV.
+The `DetectionTest` component estimates tag positions using the camera
+intrinsics derived from the Field of View value of the main camera. You can try
+the sample without adjusting it, but it may give incorrect depth information.
+To get accurate tag positions, you should match the FoV value with the actual
+camera FoV or provide the exact intrinsic parameters.
 
 ![image](https://i.imgur.com/BUVHSnXl.jpg)
 
 For example, I'm using [Zoom Q2n-4K video camera] for testing, which gives about
-78 degrees horizontal FoV at the mid-angle mode. So I changed the FOV Axis to
-"Horizontal" and the Field of View value to 78.
+78 degrees horizontal FoV at the mid-angle mode. From this value and the image
+resolution you can compute `fx` as `width / (2 * tan(78° / 2))`.
 
 [Zoom Q2n-4K video camera]:
   https://zoomcorp.com/en/us/video-recorders/video-recorders/q2n-4k-handy-video-recorder/
@@ -74,12 +75,16 @@ detector = new AprilTag.TagDetector(imageWidth, imageHeight, decimation);
 ```
 
 Call the `ProcessImage` method every frame to detect tags from an input image.
-You can use `ReadonlySpan<Color32>` to give an image. At the same time, you have
-to specify the camera FoV (horizontal) in degrees and the tag size in meters.
+You can use `ReadOnlySpan<Color32>` to give an image. At the same time, you have
+to specify the camera intrinsic parameters (`fx`, `fy`, `cx`, `cy`) and the tag
+size in meters.
+
+For backward compatibility, there is also an overload that takes the horizontal
+field of view and internally derives these intrinsic parameters.
 
 ```csharp
 texture.GetPixels32(buffer);
-detector.ProcessImage(buffer, fov, tagSize);
+detector.ProcessImage(buffer, fx, fy, cx, cy, tagSize);
 ```
 
 You can retrieve the detected tags from the `DetectedTags` property.
