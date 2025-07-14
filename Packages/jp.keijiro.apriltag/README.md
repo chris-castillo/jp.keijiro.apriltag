@@ -87,6 +87,13 @@ texture.GetPixels32(buffer);
 detector.ProcessImage(buffer, fx, fy, cx, cy, tagSize);
 ```
 
+If you already have a grayscale `NativeArray<byte>` (e.g. from an ARFoundation
+`XRCpuImage`), pass it directly to avoid additional conversions:
+
+```csharp
+detector.ProcessImage(imageBytes, fx, fy, cx, cy, tagSize);
+```
+
 You can retrieve the detected tags from the `DetectedTags` property.
 
 ```csharp
