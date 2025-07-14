@@ -61,7 +61,24 @@ public sealed class TagDetector : System.IDisposable
     }
 
     public void ProcessImage
+      (NativeArray<byte> image, float fx, float fy, float cx, float cy, float tagSize)
+    {
+        ImageConverter.Convert(image, _image);
+        RunDetectorAndEstimator(fx, fy, cx, cy, tagSize);
+    }
+
+    public void ProcessImage
       (ReadOnlySpan<Color32> image, float fov, float tagSize)
+    {
+        ImageConverter.Convert(image, _image);
+        var fl = _image.Height * 0.5f / Mathf.Tan(fov * 0.5f);
+        var cx = _image.Width * 0.5f;
+        var cy = _image.Height * 0.5f;
+        RunDetectorAndEstimator(fl, fl, cx, cy, tagSize);
+    }
+
+    public void ProcessImage
+      (NativeArray<byte> image, float fov, float tagSize)
     {
         ImageConverter.Convert(image, _image);
         var fl = _image.Height * 0.5f / Mathf.Tan(fov * 0.5f);
