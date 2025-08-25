@@ -56,7 +56,14 @@ struct PoseEstimationJob : Unity.Jobs.IJobParallelFor
         var rot = math.quaternion(pose.R.AsFloat3x3());
         rot = rot.value * math.float4(-1, 1, -1, 1);
 
-        _output[i] = new TagPose(_input[i].Ref.ID, pos, rot);
+        _output[i] = new TagPose(
+            _input[i].Ref.ID,
+            pos,
+            rot,
+            _input[i].Ref.Hamming,
+            _input[i].Ref.DecisionMargin,
+            (float)pose.ReprojectionError
+        );
     }
 }
 

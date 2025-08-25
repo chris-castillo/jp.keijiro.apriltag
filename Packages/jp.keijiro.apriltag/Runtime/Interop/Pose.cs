@@ -10,6 +10,7 @@ public struct Pose : IDisposable
 
     IntPtr matd_r;
     IntPtr matd_t;
+    double err;
 
     #endregion
 
@@ -18,10 +19,12 @@ public struct Pose : IDisposable
     unsafe public ref Matd3x3 R => ref Util.AsRef<Matd3x3>((void*)matd_r);
     unsafe public ref Matd3x1 t => ref Util.AsRef<Matd3x1>((void*)matd_t);
 
+    public double ReprojectionError => err;
+
     public Pose(ref DetectionInfo info)
     {
         matd_r = matd_t = IntPtr.Zero;
-        _Estimate(ref info, ref this);
+        err = _Estimate(ref info, ref this);
     }
 
     public void Dispose()
