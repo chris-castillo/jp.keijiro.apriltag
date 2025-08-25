@@ -24,6 +24,7 @@ public struct Pose : IDisposable
     public Pose(ref DetectionInfo info)
     {
         matd_r = matd_t = IntPtr.Zero;
+        err = 0; // Initialize err before using 'this'
         err = _Estimate(ref info, ref this);
     }
 
