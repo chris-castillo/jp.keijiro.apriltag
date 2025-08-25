@@ -101,6 +101,15 @@ foreach (var tag in detector.DetectedTags)
     Debug.Log($"{tag.ID} {tag.Position} {tag.Rotation}");
 ```
 
+Each `TagPose` also exposes several quality indicators:
+
+* `Hamming`: The number of bit errors between the observed code and the nearest
+  valid tag (0 means an exact match).
+* `DecisionMargin`: A heuristic confidence measure from AprilTag; higher values
+  indicate more reliable detections.
+* `ReprojectionError`: The pose estimation error; lower values suggest a more
+  trustworthy pose.
+
 Dispose the detector object when you no longer need it.
 
 ```csharp
